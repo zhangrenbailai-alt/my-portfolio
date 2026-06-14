@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品タイトル — SITE TITLE</title><!-- ← タイトルを変える -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/work.css">
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="nav-logo">SITE TITLE</a>
+    <div class="nav-links">
+      <a href="../index.html">← works に戻る</a>
+    </div>
+  </nav>
+
+  <div class="work-hero theme-green"><!-- ← テーマカラーのクラスを変える -->
+    <div class="work-hero-num">05</div><!-- ← 番号を変える -->
+    <div class="work-hero-label">omelet rice</div><!-- ← 英語名を変える -->
+    <h1>オムライス</h1><!-- ← 作品名を変える -->
+    <p class="work-hero-lead">
+      一言で作品を説明するリード文をここに書く。
+    </p>
+  </div>
+
+  <div class="work-body">
+
+    <!-- コンセプト（必須） -->
+    <div class="work-section work-section-wide">
+      <div class="work-section-label">concept</div>
+      <p>
+        コンセプトの説明をここに書く。
+      </p>
+    </div>
+
+    <!-- 作品写真（画像がない場合はこのブロックごと削除） -->
+    <div class="work-section">
+      <div class="work-section-label">work</div>
+      <img src="../images/ファイル名.jpg" alt="作品の説明" class="work-img">
+    </div>
+
+    <!-- 制作過程（不要なら削除） -->
+    <div class="work-section">
+      <div class="work-section-label">process</div>
+      <p>
+        制作過程の説明をここに書く。
+      </p>
+      <!-- 画像が必要なら以下を追加、不要なら削除 -->
+      <img src="../images/ファイル名.jpg" alt="制作過程" class="work-img" style="margin-top:1.5rem;">
+    </div>
+
+    <!-- QRリンク先カード（QRコードの数だけ増やす） -->
+    <div class="work-section work-section-wide">
+      <div class="work-section-label">qr destinations</div>
+      <p class="qr-destinations-sub">各QRコードを読み込むと、それぞれのページへ</p>
+
+      <div class="qr-cards">
+
+        <!-- カード1 -->
+        <a href="Omelet rice/recipe.html" class="qr-card theme-green"><!-- ← テーマカラーを変える -->
+          <div class="qr-card-type">recipe</div><!-- ← 種類を変える（poem/photo/text/videoなど） -->
+          <div class="qr-card-title">リンク先の内容タイトル</div>
+          <div class="qr-card-desc">補足説明</div>
+          <div class="qr-card-arrow">→</div>
+        </a>
+
+        <!-- カード2（不要なら削除、増やすことも可能） -->
+        <a href="Omelet rice/photo.html" class="qr-card theme-green">
+          <div class="qr-card-type">photo</div>
+          <div class="qr-card-title">リンク先の内容タイトル</div>
+          <div class="qr-card-desc">補足説明</div>
+          <div class="qr-card-arrow">→</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- 前後ナビ（前の作品がない場合は左側のaタグを spanに変える） -->
+    <div class="work-nav-bottom">
+      <a href="questionnaire.html" class="prev">← アンケート</a>
+      <a href="stamp.html" class="next">ハンコ →</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

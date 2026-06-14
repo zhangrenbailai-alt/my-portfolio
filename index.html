@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SITE TITLE</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SITE TITLE</a>
+    <div class="nav-links">
+      <a href="#works">works</a>
+      <a href="about.html">about</a>
+      <a href="blog.html">blog</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <h1>QRコードに<br>新しい意味を</h1>
+    <p>身体と情報のあいだを探る作品群</p>
+  </div>
+
+  <!-- PC用：モンドリアングリッド -->
+  <section id="works" class="mondrian-grid" id="mondrian-grid"></section>
+
+  <!-- スマホ用：縦リスト -->
+  <section class="mobile-works" id="mobile-works"></section>
+
+  <div class="bottom-row">
+    <a href="about.html" class="bottom-about">
+      <div class="bottom-label">about</div>
+      <div class="bottom-about-text">作者について →</div>
+    </a>
+    <div class="bottom-blog">
+      <div class="bottom-label">blog — 制作記録</div>
+      <div id="index-blog-list"></div>
+    </div>
+  </div>
+
+  <script src="posts-data.js"></script>
+  <script>
+    const WORKS = [
+      { label:'calligraphy', title:'書道',    color:'#7B61FF', url:'works/calligraphy.html' },
+      { label:'letter',      title:'手紙',    color:'#FF6B6B', url:'works/letter.html'      },
+      { label:'novel',       title:'短編小説', color:'#4ECDC4', url:'works/novel.html'       },
+      { label:'questionnaire',      title:'アンケート',      color:'#FFD93D', url:'works/questionnaire.html'      },
+      { label:'Omelet rice',      title:'オムライス', color:'#A8E6CF', url:'works/Omelet rice.html'      },
+      { label:'stamp',       title:'ハンコ',  color:'#FF8B94', url:'works/stamp.html'       },
+    ];
+
+    /* =====================
+       PC用 モンドリアングリッド
+    ===================== */
+    const gridClasses = ['mg-c1','mg-c2','mg-c3','mg-c4','mg-c5','mg-c6'];
+    const grid = document.querySelector('.mondrian-grid');
+
+    WORKS.forEach((work, i) => {
+      const a = document.createElement('a');
+      a.href = work.url;
+      a.className = 'mg-card ' + gridClasses[i];
+      a.style.setProperty('--work-color', work.color);
+      a.innerHTML = `
+        <div class="mg-card-bg"></div>
+        <div class="mg-card-overlay"></div>
+        <div class="mg-card-accent"></div>
+        <span class="mg-card-num">0${i + 1}</span>
+        <div class="mg-card-body">
+          <div class="mg-card-label">${work.label}</div>
+          <div class="mg-card-title">${work.title}</div>
+        </div>
+      `;
+      grid.appendChild(a);
+    });
+
+    /* =====================
+       スマホ用 縦リスト
+    ===================== */
+    const mobileWorks = document.getElementById('mobile-works');
+
+    WORKS.forEach((work, i) => {
+      const a = document.createElement('a');
+      a.href = work.url;
+      a.className = 'mobile-work-item';
+      a.innerHTML = `
+        <div class="mobile-work-accent" style="background:${work.color}"></div>
+        <div class="mobile-work-body">
+          <div class="mobile-work-label" style="color:${work.color}">${work.label}</div>
+          <div class="mobile-work-title">${work.title}</div>
+        </div>
+        <span class="mobile-work-num">0${i + 1}</span>
+      `;
+      mobileWorks.appendChild(a);
+    });
+
+    /* =====================
+       ブログ最新2件
+    ===================== */
+    const blogList = document.getElementById('index-blog-list');
+
+    POSTS_SORTED.slice(0, 2).forEach(post => {
+      const a = document.createElement('a');
+      a.href = post.url;
+      a.className = 'blog-item';
+      a.innerHTML = `
+        <span>${post.title}</span>
+        <time>${post.date}</time>
+      `;
+      blogList.appendChild(a);
+    });
+  </script>
+
+</body>
+</html>

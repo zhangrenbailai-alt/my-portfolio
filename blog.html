@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>blog — SITE TITLE</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">SITE TITLE</a>
+    <div class="nav-links">
+      <a href="index.html">works</a>
+      <a href="about.html">about</a>
+      <a href="blog.html">blog</a>
+    </div>
+  </nav>
+
+  <div class="blog-hero">
+    <div>
+      <div class="blog-hero-label">blog</div>
+      <h1>制作記録</h1>
+    </div>
+  </div>
+
+  <div class="blog-filters">
+    <button class="blog-filter active" data-tag="all">all</button>
+    <button class="blog-filter" data-tag="concept">concept</button>
+    <button class="blog-filter" data-tag="calligraphy">calligraphy</button>
+    <button class="blog-filter" data-tag="letter">letter</button>
+    <button class="blog-filter" data-tag="novel">novel</button>
+  </div>
+
+  <div class="blog-list" id="blog-list"></div>
+
+<script src="posts-data.js"></script>
+<script>
+  const list = document.getElementById('blog-list');
+  const filters = document.querySelectorAll('.blog-filter');
+
+  function render(tag) {
+    list.innerHTML = '';
+    const filtered = tag === 'all'
+      ? POSTS_SORTED
+      : POSTS_SORTED.filter(p => p.tag === tag);
+
+    filtered.forEach(post => {
+      const a = document.createElement('a');
+      a.href = post.url;
+      a.className = 'blog-item';
+      a.dataset.tag = post.tag;
+      a.innerHTML = `
+        <div>
+          <div class="blog-item-tag tag-${post.tag}">${post.tag}</div>
+          <div class="blog-item-title">${post.title}</div>
+        </div>
+        <time class="blog-item-date">${post.date}</time>
+      `;
+      list.appendChild(a);
+    });
+  }
+
+  // 初期表示
+  render('all');
+
+  // フィルター
+  filters.forEach(filter => {
+    filter.addEventListener('click', () => {
+      filters.forEach(f => f.classList.remove('active'));
+      filter.classList.add('active');
+      render(filter.dataset.tag);
+    });
+  });
+</script>
+
+</body>
+</html>
