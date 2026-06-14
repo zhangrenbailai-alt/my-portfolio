@@ -458,6 +458,9 @@ nav {
 .tag-calligraphy { color: #7B61FF; }
 .tag-letter      { color: #FF6B6B; }
 .tag-novel       { color: #4ECDC4; }
+.tag-questionnaire  { color: #FFD93D; }
+.tag-Omeletrice  { color: #A8E6CF; }
+.tag-stamp   { color: #FF8B94; }
 .tag-concept     { color: #555; }
 
 .blog-item-title {
@@ -557,4 +560,12 @@ nav {
   .bottom-blog {
     padding: 1.2rem;
   }
+}
+
+.post-body h2 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 2.5rem 0 1rem;
+  letter-spacing: 0.02em;
 }
