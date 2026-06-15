@@ -1,32 +1,14 @@
 const POSTS = [
-  {
-    id: "post4",
-    tag: "novel",
-    title: "小説の文字組をQRコードにする実験",
-    date: "2024.12.28",
-    url: "posts/post4.html"
+
+
+   { 
+    id: "20260615-post1",       // ファイル名から.htmlを除いたもの
+    tag: "concept",               // タグ名
+    title: "Webサイトの開設と制作の計画",  // 記事タイトル
+    date: "2026.06.15",          // 日付
+    url: "posts/20260615-post1.html"  // ファイルのパス
   },
-  {
-    id: "post3",
-    tag: "concept",
-    title: "タワマンと電子書籍とQRコード——コンセプトを固める",
-    date: "2025.01.05",
-    url: "posts/post3.html"
-  },
-  {
-    id: "post2",
-    tag: "letter",
-    title: "手紙の便箋に印刷するQRコードのサイズ検討",
-    date: "2025.01.12",
-    url: "posts/post2.html"
-  },
-  {
-    id: "post1",
-    tag: "calligraphy",
-    title: "書道の試作、三度目でやっと読み込めた",
-    date: "2025.01.15",
-    url: "posts/post1.html"
-  }
+  
 ];
 
 // 日付で降順ソートして返す（常に新しい順）
