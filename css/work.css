@@ -192,3 +192,44 @@
 .work-nav-bottom .next {
   color: #7B61FF;
 }
+
+/* ==================
+   作品解説ページ スマホ対応
+================== */
+@media (max-width: 600px) {
+
+  .work-hero {
+    padding: 2.5rem 1.2rem 2rem;
+  }
+
+  .work-hero h1 {
+    font-size: 2rem;
+  }
+
+  .work-hero-num {
+    font-size: 5rem;
+    top: 1rem;
+    transform: none;
+  }
+
+  .work-body {
+    grid-template-columns: 1fr;
+  }
+
+  .work-section {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .work-section-wide {
+    grid-column: 1;
+    padding: 1.5rem 1.2rem;
+  }
+
+  .qr-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .work-nav-bottom {
+    padding: 1.2rem;
+  }
+}

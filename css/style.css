@@ -458,6 +458,9 @@ nav {
 .tag-calligraphy { color: #7B61FF; }
 .tag-letter      { color: #FF6B6B; }
 .tag-novel       { color: #4ECDC4; }
+.tag-questionnaire  { color: #FFD93D; }
+.tag-Omeletrice  { color: #A8E6CF; }
+.tag-stamp   { color: #FF8B94; }
 .tag-concept     { color: #555; }
 
 .blog-item-title {
@@ -525,28 +528,15 @@ nav {
 ================== */
 @media (max-width: 600px) {
 
+  /* ==================
+     index
+  ================== */
   .mondrian-grid {
     display: none;
   }
 
   .mobile-works {
     display: flex;
-  }
-
-  nav {
-    padding: 1rem 1.2rem;
-  }
-
-  .nav-links {
-    gap: 1rem;
-  }
-
-  .hero {
-    padding: 2rem 1.2rem 1rem;
-  }
-
-  .hero h1 {
-    font-size: 1.6rem;
   }
 
   .bottom-row {
@@ -557,4 +547,132 @@ nav {
   .bottom-blog {
     padding: 1.2rem;
   }
+
+  /* ==================
+     共通
+  ================== */
+  nav {
+    padding: 1rem 1.2rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .nav-links a {
+    font-size: 0.7rem;
+  }
+
+  .hero {
+    padding: 2rem 1.2rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  /* ==================
+     about
+  ================== */
+  .about-hero {
+    padding: 2rem 1.2rem 1.5rem;
+  }
+
+  .about-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .about-body {
+    grid-template-columns: 1fr;
+  }
+
+  .about-photo {
+    aspect-ratio: 3/2;
+  }
+
+  .about-text {
+    padding: 1.5rem 1.2rem;
+  }
+
+  .about-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .about-meta-item {
+    padding: 1rem 1.2rem;
+  }
+
+  /* ==================
+     blog一覧
+  ================== */
+  .blog-hero {
+    padding: 2rem 1.2rem 1.5rem;
+  }
+
+  .blog-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .blog-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .blog-filter {
+    padding: 0.7rem 1rem;
+    white-space: nowrap;
+    font-size: 0.68rem;
+  }
+
+  .blog-list {
+    padding: 0 1.2rem;
+  }
+
+  .blog-item {
+    padding: 1.1rem 0;
+    gap: 0.8rem;
+  }
+
+  .blog-item-title {
+    font-size: 0.82rem;
+  }
+
+  /* ==================
+     blog記事
+  ================== */
+  .post-hero {
+    padding: 2rem 1.2rem 1.5rem;
+  }
+
+  .post-hero h1 {
+    font-size: 1.4rem;
+  }
+
+  .post-body {
+    padding: 2rem 1.2rem 4rem;
+  }
+
+  .post-body p {
+    font-size: 0.9rem;
+  }
+
+  /* ==================
+     QRリンク先ページ
+  ================== */
+  .dest-body {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .dest-text p {
+    font-size: 1rem;
+    line-height: 2;
+  }
+}
+
+.post-body h2 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 2.5rem 0 1rem;
+  letter-spacing: 0.02em;
 }
