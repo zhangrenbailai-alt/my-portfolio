@@ -322,14 +322,12 @@ nav {
 
 .about-photo {
   background-color: #111;
-  aspect-ratio: 1;
   overflow: hidden;
 }
 
 .about-photo img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
 }
 
@@ -516,10 +514,9 @@ nav {
 
 .post-img {
   width: 100%;
+  height: auto;
   display: block;
   margin: 2rem 0;
-  aspect-ratio: 16/9;
-  object-fit: cover;
   background-color: #111;
 }
 
@@ -587,7 +584,7 @@ nav {
   }
 
   .about-photo {
-    aspect-ratio: 3/2;
+    aspect-ratio: unset;
   }
 
   .about-text {
