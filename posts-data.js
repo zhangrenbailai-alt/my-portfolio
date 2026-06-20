@@ -1,5 +1,37 @@
 const POSTS = [
 
+   { 
+    id: "20260620-post4",       // ファイル名から.htmlを除いたもの
+    tag: "questionnaire",               // タグ名
+    title: "仕組みを考える",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post4.html"  // ファイルのパス
+  },
+    
+   { 
+    id: "20260620-post3",       // ファイル名から.htmlを除いたもの
+    tag: "letter",               // タグ名
+    title: "何を作るか",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post3.html"  // ファイルのパス
+  },
+
+   { 
+    id: "20260620-post2",       // ファイル名から.htmlを除いたもの
+    tag: "letter",               // タグ名
+    title: "QRコードを手で描くという行為自体を作品化したい",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post2.html"  // ファイルのパス
+  },
+
+   { 
+    id: "20260620-post1",       // ファイル名から.htmlを除いたもの
+    tag: "questionnaire",               // タグ名
+    title: "インタラクティブな小作品を作りたい",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post1.html"  // ファイルのパス
+  },
+
   { 
     id: "20260618-post2",       // ファイル名から.htmlを除いたもの
     tag: "calligraphy",               // タグ名
