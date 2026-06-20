@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編集</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 1.5rem;
+      border-bottom: 0.5px solid #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #555;
+    }
+
+    .char-count {
+      font-size: 0.65rem;
+      color: #555;
+      letter-spacing: 0.04em;
+    }
+
+    .char-count.near-limit { color: #FFD93D; }
+    .char-count.at-limit   { color: #FF6B6B; }
+
+    .current-text-wrap {
+      padding: 1.5rem;
+      border-bottom: 0.5px solid #222;
+    }
+
+    .current-text-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: #444;
+      margin-bottom: 0.8rem;
+    }
+
+    .current-text-display {
+      color: #666;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      min-height: 2rem;
+    }
+
+    .edit-wrap {
+      flex: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .edit-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: #444;
+    }
+
+    textarea {
+      flex: 1;
+      background: #111;
+      border: 0.5px solid #2a2a2a;
+      color: #fff;
+      font-size: 1rem;
+      line-height: 1.9;
+      padding: 1rem;
+      resize: none;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      min-height: 200px;
+    }
+
+    textarea:focus {
+      border-color: #444;
+    }
+
+    textarea.at-limit {
+      border-color: #FF6B6B;
+    }
+
+    .submit-btn {
+      background: #fff;
+      color: #0a0a0a;
+      border: none;
+      padding: 1rem;
+      font-size: 0.85rem;
+      font-family: inherit;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      width: 100%;
+    }
+
+    .submit-btn:hover { opacity: 0.8; }
+    .submit-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .status {
+      font-size: 0.7rem;
+      color: #555;
+      text-align: center;
+      min-height: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    .status.success { color: #A8E6CF; }
+    .status.error   { color: #FF6B6B; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <span class="header-label">questionnaire — edit</span>
+    <span class="char-count" id="char-count">0 / 140</span>
+  </div>
+
+  <div class="current-text-wrap">
+    <div class="current-text-label">現在の文章</div>
+    <div class="current-text-display" id="current-text-display">読み込み中...</div>
+  </div>
+
+  <div class="edit-wrap">
+    <div class="edit-label">編集する</div>
+    <textarea
+      id="editor"
+      maxlength="140"
+      placeholder="文章を入力してください"
+    ></textarea>
+    <button class="submit-btn" id="submit-btn">送信する</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, set, push, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    /* =====================
+       自分のfirebaseConfigに書き換える
+    ===================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAo6ooNO1BVubeFm_M-Q8TFaXwpPSmkCbw",
+      authDomain: "qr-artwork-c274c.firebaseapp.com",
+      databaseURL: "https://qr-artwork-c274c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "qr-artwork-c274c",
+      storageBucket: "qr-artwork-c274c.firebasestorage.app",
+      messagingSenderId: "348130880223",
+      appId: "1:348130880223:web:624291392415b49d1dd76a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    /* =====================
+       セッションID（匿名識別子）
+    ===================== */
+    let sessionId = sessionStorage.getItem('sessionId');
+    if (!sessionId) {
+      sessionId = 'user-' + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem('sessionId', sessionId);
+    }
+
+    /* =====================
+       現在の文章を取得して表示
+    ===================== */
+    const currentDisplay = document.getElementById('current-text-display');
+    const editor         = document.getElementById('editor');
+    const submitBtn      = document.getElementById('submit-btn');
+    const status         = document.getElementById('status');
+    const charCount      = document.getElementById('char-count');
+
+    let currentValue = '';
+
+    async function loadCurrentText() {
+      const snap = await get(ref(db, 'currentText/value'));
+      currentValue = snap.val() || '';
+      currentDisplay.textContent = currentValue.trim() || '（まだ文章がありません）';
+      editor.value = currentValue;
+      updateCharCount();
+    }
+
+    loadCurrentText();
+
+    /* =====================
+       文字数カウント
+    ===================== */
+    function updateCharCount() {
+      const len = editor.value.length;
+      charCount.textContent = `${len} / 140`;
+      charCount.className = 'char-count';
+      editor.className = '';
+      if (len >= 140) {
+        charCount.classList.add('at-limit');
+        editor.classList.add('at-limit');
+      } else if (len >= 120) {
+        charCount.classList.add('near-limit');
+      }
+    }
+
+    editor.addEventListener('input', updateCharCount);
+
+    /* =====================
+       送信
+    ===================== */
+    submitBtn.addEventListener('click', async () => {
+      const newText = editor.value;
+
+      if (newText === currentValue) {
+        status.textContent = '文章が変更されていません';
+        status.className = 'status';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      status.textContent = '送信中...';
+      status.className = 'status';
+
+      try {
+        // currentTextを更新
+        await set(ref(db, 'currentText'), {
+          value: newText,
+          updatedAt: Date.now()
+        });
+
+        // 編集履歴を保存
+        await push(ref(db, 'editHistory'), {
+          sessionId: sessionId,
+          before: currentValue,
+          after: newText,
+          timestamp: Date.now()
+        });
+
+        currentValue = newText;
+        currentDisplay.textContent = newText || '（まだ文章がありません）';
+        status.textContent = '送信しました';
+        status.className = 'status success';
+
+      } catch (e) {
+        status.textContent = 'エラーが発生しました。もう一度お試しください。';
+        status.className = 'status error';
+        console.error(e);
+      } finally {
+        submitBtn.disabled = false;
+        setTimeout(() => { status.textContent = ''; }, 3000);
+      }
+    });
+  </script>
+
+</body>
+</html>

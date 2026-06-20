@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>履歴</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      padding: 1.5rem;
+      border-bottom: 0.5px solid #222;
+      position: sticky;
+      top: 0;
+      background: #0a0a0a;
+      z-index: 10;
+    }
+
+    .header-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #555;
+      margin-bottom: 0.3rem;
+    }
+
+    .header-desc {
+      font-size: 0.72rem;
+      color: #333;
+      letter-spacing: 0.02em;
+    }
+
+    .history-list {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: #111;
+    }
+
+    .history-item {
+      background: #0a0a0a;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .history-time {
+      font-size: 0.6rem;
+      color: #333;
+      letter-spacing: 0.06em;
+    }
+
+    .diff-wrap {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      word-break: break-all;
+    }
+
+    /* 削除された文字：赤・打ち消し線 */
+    .diff-removed {
+      color: #FF6B6B;
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+
+    /* 追加された文字：緑 */
+    .diff-added {
+      color: #A8E6CF;
+    }
+
+    /* 変化なし */
+    .diff-unchanged {
+      color: #555;
+    }
+
+    .empty-state {
+      padding: 4rem 1.5rem;
+      text-align: center;
+      color: #333;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      line-height: 2;
+    }
+
+    .loading {
+      padding: 4rem 1.5rem;
+      text-align: center;
+      color: #333;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-label">questionnaire — history</div>
+    <div class="header-desc" id="header-desc">読み込み中...</div>
+  </div>
+
+  <div id="content">
+    <div class="loading">読み込み中...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    /* =====================
+       自分のfirebaseConfigに書き換える
+    ===================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAo6ooNO1BVubeFm_M-Q8TFaXwpPSmkCbw",
+      authDomain: "qr-artwork-c274c.firebaseapp.com",
+      databaseURL: "https://qr-artwork-c274c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "qr-artwork-c274c",
+      storageBucket: "qr-artwork-c274c.firebasestorage.app",
+      messagingSenderId: "348130880223",
+      appId: "1:348130880223:web:624291392415b49d1dd76a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    /* =====================
+       セッションID取得
+    ===================== */
+    let sessionId = sessionStorage.getItem('sessionId');
+    if (!sessionId) {
+      sessionId = 'user-' + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem('sessionId', sessionId);
+    }
+
+    const content    = document.getElementById('content');
+    const headerDesc = document.getElementById('header-desc');
+
+    /* =====================
+       差分計算（最長共通部分列）
+    ===================== */
+    function computeDiff(before, after) {
+      const a = before.split('');
+      const b = after.split('');
+      const m = a.length;
+      const n = b.length;
+
+      // DPテーブル
+      const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = a[i-1] === b[j-1]
+            ? dp[i-1][j-1] + 1
+            : Math.max(dp[i-1][j], dp[i][j-1]);
+        }
+      }
+
+      // バックトラック
+      const result = [];
+      let i = m, j = n;
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+          result.unshift({ type: 'unchanged', char: a[i-1] });
+          i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+          result.unshift({ type: 'added', char: b[j-1] });
+          j--;
+        } else {
+          result.unshift({ type: 'removed', char: a[i-1] });
+          i--;
+        }
+      }
+      return result;
+    }
+
+    /* =====================
+       差分をHTMLに変換
+    ===================== */
+    function diffToHTML(diffResult) {
+      let html = '';
+      let currentType = null;
+      let buffer = '';
+
+      function flush() {
+        if (!buffer) return;
+        if (currentType === 'added') {
+          html += `<span class="diff-added">${buffer}</span>`;
+        } else if (currentType === 'removed') {
+          html += `<span class="diff-removed">${buffer}</span>`;
+        } else {
+          html += `<span class="diff-unchanged">${buffer}</span>`;
+        }
+        buffer = '';
+      }
+
+      diffResult.forEach(({ type, char }) => {
+        if (type !== currentType) {
+          flush();
+          currentType = type;
+        }
+        buffer += char === '\n' ? '<br>' : char;
+      });
+      flush();
+      return html;
+    }
+
+    /* =====================
+       時刻フォーマット
+    ===================== */
+    function formatTime(timestamp) {
+      const d = new Date(timestamp);
+      const h = String(d.getHours()).padStart(2, '0');
+      const m = String(d.getMinutes()).padStart(2, '0');
+      const s = String(d.getSeconds()).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    /* =====================
+       メイン処理
+    ===================== */
+    async function loadHistory() {
+      const snap = await get(ref(db, 'editHistory'));
+
+      if (!snap.exists()) {
+        headerDesc.textContent = '編集履歴はまだありません';
+        content.innerHTML = `
+          <div class="empty-state">
+            まだ誰も編集していません
+          </div>`;
+        return;
+      }
+
+      // 全履歴を配列に変換
+      const allHistory = [];
+      snap.forEach(child => {
+        allHistory.push({ id: child.key, ...child.val() });
+      });
+
+      // 自分以外のセッションIDを抽出
+      const otherSessions = [...new Set(
+        allHistory
+          .filter(h => h.sessionId !== sessionId)
+          .map(h => h.sessionId)
+      )];
+
+      if (otherSessions.length === 0) {
+        headerDesc.textContent = 'あなた以外の編集者がまだいません';
+        content.innerHTML = `
+          <div class="empty-state">
+            他の鑑賞者の編集を待っています<br>
+            先に編集した場合はしばらくお待ちください
+          </div>`;
+        return;
+      }
+
+      // ランダムに一人選ぶ
+      const chosen = otherSessions[
+        Math.floor(Math.random() * otherSessions.length)
+      ];
+
+      // 選んだ人の履歴を時系列順に取得
+      const chosenHistory = allHistory
+        .filter(h => h.sessionId === chosen)
+        .sort((a, b) => a.timestamp - b.timestamp);
+
+      headerDesc.textContent = `ある人物の編集履歴 — ${chosenHistory.length}件`;
+
+      // 履歴を表示
+      const list = document.createElement('div');
+      list.className = 'history-list';
+
+      chosenHistory.forEach(item => {
+        const diff = computeDiff(item.before, item.after);
+        const html = diffToHTML(diff);
+
+        const el = document.createElement('div');
+        el.className = 'history-item';
+        el.innerHTML = `
+          <div class="history-time">${formatTime(item.timestamp)}</div>
+          <div class="diff-wrap">${html || '<span class="diff-unchanged">（空白）</span>'}</div>
+        `;
+        list.appendChild(el);
+      });
+
+      content.innerHTML = '';
+      content.appendChild(list);
+    }
+
+    loadHistory();
+  </script>
+
+</body>
+</html>

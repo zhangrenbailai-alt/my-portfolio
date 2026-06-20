@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+    }
+
+    /* 左半分：文章表示 */
+    .text-area {
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 0.5px solid #1a1a1a;
+      position: relative;
+    }
+
+    .text-label {
+      position: absolute;
+      top: 2rem;
+      left: 4rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      color: #333;
+    }
+
+    .text-display {
+      font-size: 2rem;
+      line-height: 1.9;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      word-break: break-all;
+      transition: opacity 0.4s ease;
+    }
+
+    .text-display.updating {
+      opacity: 0.4;
+    }
+
+    .text-empty {
+      color: #2a2a2a;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+    }
+
+    .updated-at {
+      position: absolute;
+      bottom: 2rem;
+      left: 4rem;
+      font-size: 0.6rem;
+      color: #2a2a2a;
+      letter-spacing: 0.06em;
+    }
+
+    /* 右側：QRコード2つ */
+    .qr-area {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 0;
+    }
+
+    .qr-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      border-bottom: 0.5px solid #1a1a1a;
+    }
+
+    .qr-block:last-child {
+      border-bottom: none;
+    }
+
+    .qr-block-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: #444;
+      text-align: center;
+    }
+
+    .qr-block img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      opacity: 0.85;
+    }
+
+    /* QR画像がない場合のプレースホルダー */
+    .qr-placeholder {
+      width: 140px;
+      height: 140px;
+      background: #111;
+      border: 0.5px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-placeholder span {
+      color: #333;
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="text-area">
+    <div class="text-label">questionnaire — shared text</div>
+    <div class="text-display" id="text-display">
+      <span class="text-empty">読み込み中...</span>
+    </div>
+    <div class="updated-at" id="updated-at"></div>
+  </div>
+
+  <div class="qr-area">
+
+    <div class="qr-block">
+      <div class="qr-block-label">edit</div>
+      <!-- input.htmlのQRコード画像に差し替える -->
+      <div class="qr-placeholder">
+        <span>QR画像</span>
+      </div>
+      <!-- 画像ができたらこちらに差し替え -->
+      <!-- <img src="../../images/qr-input.png" alt="編集ページQR"> -->
+    </div>
+
+    <div class="qr-block">
+      <div class="qr-block-label">history</div>
+      <!-- history.htmlのQRコード画像に差し替える -->
+      <div class="qr-placeholder">
+        <span>QR画像</span>
+      </div>
+      <!-- <img src="../../images/qr-history.png" alt="履歴ページQR"> -->
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    /* =====================
+       自分のfirebaseConfigに書き換える
+    ===================== */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAo6ooNO1BVubeFm_M-Q8TFaXwpPSmkCbw",
+      authDomain: "qr-artwork-c274c.firebaseapp.com",
+      databaseURL: "https://qr-artwork-c274c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "qr-artwork-c274c",
+      storageBucket: "qr-artwork-c274c.firebasestorage.app",
+      messagingSenderId: "348130880223",
+      appId: "1:348130880223:web:624291392415b49d1dd76a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    const textDisplay = document.getElementById('text-display');
+    const updatedAt   = document.getElementById('updated-at');
+
+    /* =====================
+       リアルタイム監視
+       誰かが送信するたびに自動で更新される
+    ===================== */
+    onValue(ref(db, 'currentText'), (snap) => {
+      const data = snap.val();
+
+      textDisplay.classList.add('updating');
+
+      setTimeout(() => {
+        if (!data || !data.value || data.value.trim() === '') {
+          textDisplay.innerHTML = '<span class="text-empty">——</span>';
+        } else {
+          textDisplay.textContent = data.value;
+        }
+
+        if (data && data.updatedAt && data.updatedAt !== 0) {
+          const d = new Date(data.updatedAt);
+          const h = String(d.getHours()).padStart(2, '0');
+          const m = String(d.getMinutes()).padStart(2, '0');
+          const s = String(d.getSeconds()).padStart(2, '0');
+          updatedAt.textContent = `最終更新 ${h}:${m}:${s}`;
+        }
+
+        textDisplay.classList.remove('updating');
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>
