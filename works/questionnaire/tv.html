@@ -117,6 +117,59 @@
       font-size: 0.6rem;
       letter-spacing: 0.06em;
     }
+
+    @media (max-width: 600px) {
+
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+    overflow: auto;
+  }
+
+  .text-area {
+    padding: 2rem 1.5rem 3rem;
+    border-right: none;
+    border-bottom: 0.5px solid #1a1a1a;
+    min-height: 40vh;
+  }
+
+  .text-label {
+    top: 1.2rem;
+    left: 1.5rem;
+  }
+
+  .text-display {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .updated-at {
+    bottom: 1rem;
+    left: 1.5rem;
+  }
+
+  .qr-area {
+    grid-template-rows: auto;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .qr-block {
+    padding: 1.5rem 1rem;
+    border-bottom: none;
+    border-right: 0.5px solid #1a1a1a;
+  }
+
+  .qr-block:last-child {
+    border-right: none;
+  }
+
+  .qr-block img,
+  .qr-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+}
   </style>
 </head>
 <body>
