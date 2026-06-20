@@ -1,6 +1,22 @@
 const POSTS = [
 
    { 
+    id: "20260620-post6",       // ファイル名から.htmlを除いたもの
+    tag: "questionnaire",               // タグ名
+    title: "とりあえず完成・どう演出するかは今度考える",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post6.html"  // ファイルのパス
+  },
+
+   { 
+    id: "20260620-post5",       // ファイル名から.htmlを除いたもの
+    tag: "questionnaire",               // タグ名
+    title: "claude先生に相談",  // 記事タイトル
+    date: "2026.06.20",          // 日付
+    url: "posts/20260620-post5.html"  // ファイルのパス
+  },
+
+   { 
     id: "20260620-post4",       // ファイル名から.htmlを除いたもの
     tag: "questionnaire",               // タグ名
     title: "仕組みを考える",  // 記事タイトル
