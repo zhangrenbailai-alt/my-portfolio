@@ -21,7 +21,9 @@
     <div class="work-hero-label">questionnaire</div><!-- ← 英語名を変える -->
     <h1>アンケート</h1><!-- ← 作品名を変える -->
     <p class="work-hero-lead">
-      一言で作品を説明するリード文をここに書く。
+      作品の感想を書いてもらうフォームをQRコードで案内する。<br>
+      全員が同じ入力欄を共有し、140文字しか書き込めないように制限する。<br>
+      ランダムな誰かの編集履歴を閲覧することができる。
     </p>
   </div>
 
@@ -31,24 +33,33 @@
     <div class="work-section work-section-wide">
       <div class="work-section-label">concept</div>
       <p>
-        コンセプトの説明をここに書く。
+        授業のアンケートを出す時、スライドに映されたQRコードを数十人の生徒が一斉に読み込み、内容を入力するためにそれぞれのスマホを覗き込んでいるのがなんだか奇妙な光景に見え、これを作品にしようと思った。<br>
+        先行するプロジェクトとしてWikipediaやr/placeがあるが、これをよりミニマムかつより身近なものにしようと考えた。<br>
+        QRコードはそれ自体が何かを意味するわけではなく、どこか別の場所に繋がる窓のようなものだ。<br>
+        みんながそれを覗き込んでいる時、現実のものが見えなくなっているから、地に足がついていない感覚がある。<br>
+        だから、その感覚を崩そうと思った。<br>
+        <br>
+        先ほど例に出した Wikipediaやr/placeはインターネットの匿名性や相手の顔が見えないという要素を最大に強めたものだ。<br>
+        誰でも自由に参加できるから面白くなるというのはオープンソースの基本だし、それは良い考えである。<br>
+        しかしこの作品はアトリエで限られた鑑賞者に対してのみ展示するので、逆にQRコードでありながら他の人の気配やつながりを感じさせたいと考えた。<br>
+        そこで、ランダムな誰かの編集履歴をみることができるようにした。<br>
+        <br>
+        このアンケートでは誰もが他人の書いた文章を編集・削除できる。<br>
+        そこには誰かの顔が見えてこないので、使用者はより無作法で思いやりのない判断・書き込みをすることができるだろう。<br>
+        しかし、この作品において私は鑑賞者に、”顔は見えないけれども確かにそこにいる誰か”の存在を感じて欲しかった。<br>
+        すべての編集履歴ではなく、特定の誰かの編集履歴が見えることによって、より強く「この文章のこの部分を書いた人がいるんだ」ということを意識してもらうこと、つまり、この部屋に今いる誰かと画面の文章のつながりを想像させることを狙った。<br>
+        ネット上の言葉を顔のないものではなく、かといって名前と結びついたものでもなく、現実の気配と緩やかに結びつける試み。
       </p>
-    </div>
-
-    <!-- 作品写真（画像がない場合はこのブロックごと削除） -->
-    <div class="work-section">
-      <div class="work-section-label">work</div>
-      <img src="../images/ファイル名.jpg" alt="作品の説明" class="work-img">
     </div>
 
     <!-- 制作過程（不要なら削除） -->
     <div class="work-section">
       <div class="work-section-label">process</div>
       <p>
-        制作過程の説明をここに書く。
+        githubは静的なページしか作れないので、文章と履歴の保存は外部のサーバーで行うことにした。
       </p>
       <!-- 画像が必要なら以下を追加、不要なら削除 -->
-      <img src="../images/ファイル名.jpg" alt="制作過程" class="work-img" style="margin-top:1.5rem;">
+      <img src="https://res.cloudinary.com/dxgmaxmta/image/upload/v1781930502/IMG_9510_ded12h.jpg" alt="制作過程" class="work-img" style="margin-top:1.5rem;">
     </div>
 
     <!-- QRリンク先カード（QRコードの数だけ増やす） -->
@@ -61,23 +72,23 @@
         <!-- カード1 -->
         <a href="questionnaire/tv.html" class="qr-card theme-yellow"><!-- ← テーマカラーを変える -->
           <div class="qr-card-type">tv</div><!-- ← 種類を変える（poem/photo/text/videoなど） -->
-          <div class="qr-card-title">リンク先の内容タイトル</div>
-          <div class="qr-card-desc">補足説明</div>
+          <div class="qr-card-title">展示画面</div>
+          <div class="qr-card-desc">文章と２つのQRコード</div>
           <div class="qr-card-arrow">→</div>
         </a>
 
         <!-- カード2（不要なら削除、増やすことも可能） -->
         <a href="questionnaire/input.html" class="qr-card theme-yellow">
           <div class="qr-card-type">input</div>
-          <div class="qr-card-title">リンク先の内容タイトル</div>
-          <div class="qr-card-desc">補足説明</div>
+          <div class="qr-card-title">書き込み画面</div>
+          <div class="qr-card-desc">QRコードのリンク</div>
           <div class="qr-card-arrow">→</div>
         </a>
 
         <a href="questionnaire/history.html" class="qr-card theme-yellow">
           <div class="qr-card-type">history</div>
-          <div class="qr-card-title">リンク先の内容タイトル</div>
-          <div class="qr-card-desc">補足説明</div>
+          <div class="qr-card-title">履歴閲覧画面</div>
+          <div class="qr-card-desc">QRコードのリンク</div>
           <div class="qr-card-arrow">→</div>
         </a>        
 
